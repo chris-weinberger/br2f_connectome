@@ -1,5 +1,8 @@
 .ipynb_checkpoints/
 .DS_store
 .virtual_documents/
+<<<<<<< HEAD
 *.json
 output/*.json
+=======
+>>>>>>> 6ec4719ca46c6f20c52662c55a4a81a41601aa4c
