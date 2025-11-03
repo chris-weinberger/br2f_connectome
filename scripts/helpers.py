@@ -1,8 +1,10 @@
 import bct
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics.pairwise import cosine_similarity
 
 def get_feature_vectors_unique():
     df_average = pd.read_csv('../data/average_connectome_data.csv', header=0, index_col=0)
@@ -47,8 +49,29 @@ def get_feature_vectors_shared():
 
     return (df_avg_to_shared, df_avg_from_shared)
 
-def get_correlation_matrix(rois='unique', distance_metric='cosine'):
-    return
+def get_correlation_matrix(feature_vectors, distance_metric='cosine'):
+    '''
+    INPUT:
+        feature_vectors: k x N dataframe, where k are number of features, N are number of instances
+        distance_metric: string indicating distance metric type
+
+    OUTPUT:
+        NxN correlation matrix
+    '''
+    
+    if distance_metric=='cosine':
+        cosine_values = cosine_similarity(feature_vectors.T)
+        cosine_labels = feature_vectors.columns
+        
+        df_cosine_similarity = pd.DataFrame(cosine_values, 
+                             index=cosine_labels, 
+                             columns=cosine_labels)
+        return df_cosine_similarity
+    elif distance_metric=='spearman':
+        spearman_df = (feature_vectors.corr(method='spearman').dropna(axis=0, how='all')).dropna(axis=1, how='all')
+        return spearman_df
+    else:
+        print('unrecognized distance metric')
 
 def plot_incoming_outgoing_PCA(incoming_distance, outgoing_distance, n_components=10):
     # --- 1. Standardize the Data ---
