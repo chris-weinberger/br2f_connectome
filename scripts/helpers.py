@@ -136,7 +136,7 @@ def plot_incoming_outgoing_PCA(incoming_distance, outgoing_distance, n_component
     plt.tight_layout()
     # plt.savefig('../output/PCA_connectivity_profiles.png')
     plt.show()
-    return plt
+    return fig
 
 def plot_rsa(matrix, labels=None, title=None, output_fname=''):
     # ----- 3. Plot the RSA matrix sorted -----
