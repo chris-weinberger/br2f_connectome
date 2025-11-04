@@ -8,6 +8,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 def get_feature_vectors_unique():
     df_average = pd.read_csv('../data/average_connectome_data.csv', header=0, index_col=0)
+    hippocampal_regions = np.array(['DG','CA3','CA2','CA1v','CA1d','SUBv','SUBd'])
     # FROM hippocampus (efferent)
     df_avg_from = df_average[df_average.index.isin(hippocampal_regions)]
     
@@ -27,6 +28,7 @@ def get_feature_vectors_unique():
 
 def get_feature_vectors_shared():
     df_average = pd.read_csv('../data/average_connectome_data.csv', header=0, index_col=0)
+    hippocampal_regions = np.array(['DG','CA3','CA2','CA1v','CA1d','SUBv','SUBd'])
     # FROM hippocampus (efferent)
     df_avg_from = df_average[df_average.index.isin(hippocampal_regions)]
     
@@ -73,22 +75,27 @@ def get_correlation_matrix(feature_vectors, distance_metric='cosine'):
     else:
         print('unrecognized distance metric')
 
-def plot_incoming_outgoing_PCA(incoming_distance, outgoing_distance, n_components=10):
+def plot_incoming_outgoing_PCA(incoming_distance, outgoing_distance, n_components=7, scale=False):
     # --- 1. Standardize the Data ---
     # It's a best practice to scale data before running PCA.
-    scaler = StandardScaler()
-    afferent_scaled = scaler.fit_transform(incoming_distance)
-    efferent_scaled = scaler.fit_transform(outgoing_distance)
-    
+    afferent_data = None
+    efferent_data = None
+    if scale:
+        scaler = StandardScaler()
+        afferent_data = scaler.fit_transform(incoming_distance)
+        efferent_data = scaler.fit_transform(outgoing_distance)
+    else:
+        afferent_data = incoming_distance
+        efferent_data = outgoing_distance
     
     # --- 2. Perform PCA on Both Datasets ---
     # Since each dataset has 7 samples, there can be a maximum of 7 principal components.
-    hpc_pca_afferent = PCA(n_components=n_components)
-    hpc_pca_efferent = PCA(n_components=n_components)
+    hpc_pca_afferent = PCA(n_components=n_components, svd_solver='full')
+    hpc_pca_efferent = PCA(n_components=n_components, svd_solver='full')
     
     # Fit the PCA models to each dataset
-    hpc_pca_afferent.fit(afferent_scaled)
-    hpc_pca_efferent.fit(efferent_scaled)
+    hpc_pca_afferent.fit(afferent_data)
+    hpc_pca_efferent.fit(efferent_data)
     
     
     # --- 3. Extract Explained Variance ---
