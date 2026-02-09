@@ -382,7 +382,7 @@ def louvain_rsa(similarity_matrix_values, labels, gamma=1):
 
     return (sorted_matrix, sorted_labels)
 
-def get_pca_variances(matrix_afferent, matrix_efferent, n_components):
+def get_pca_variances(matrix_afferent, matrix_efferent, n_components, scale=False):
     """
     Runs PCA on two (samples, samples) matrices and returns the
     element-wise their explained variance ratios.
