@@ -26,19 +26,19 @@ def get_feature_vectors_unique():
 
     return (df_avg_from, df_avg_to)
 
-def get_feature_vectors_shared():
+def get_feature_vectors_shared(seed_regions):
     df_average = pd.read_csv('../data/average_connectome_data.csv', header=0, index_col=0)
-    hippocampal_regions = np.array(['DG','CA3','CA2','CA1v','CA1d','SUBv','SUBd'])
-    # FROM hippocampus (efferent)
-    df_avg_from = df_average[df_average.index.isin(hippocampal_regions)]
+
+    # FROM seed regions (efferent)
+    df_avg_from = df_average[df_average.index.isin(seed_regions)]
     
-    # TO hippocampus (afferent)
+    # TO seed regions (afferent)
     df_average_t = df_average.T
-    df_avg_to = df_average_t[df_average_t.index.isin(hippocampal_regions)]
+    df_avg_to = df_average_t[df_average_t.index.isin(seed_regions)]
     
-    # drop HPC columns
-    df_avg_from = df_avg_from.drop(hippocampal_regions, axis=1)
-    df_avg_to = df_avg_to.drop(hippocampal_regions, axis=1)
+    # drop seed region columns
+    df_avg_from = df_avg_from.drop(seed_regions, axis=1)
+    df_avg_to = df_avg_to.drop(seed_regions, axis=1)
     
     # filter to only include columns and rows with at least one connection
     df_avg_from = df_avg_from.loc[:,df_avg_from.apply(np.count_nonzero, axis=0) >= 1]
@@ -49,6 +49,13 @@ def get_feature_vectors_shared():
     df_avg_to_shared = df_avg_to[common_cols]
     df_avg_from_shared = df_avg_from[common_cols]
 
+    return (df_avg_to_shared, df_avg_from_shared)
+    
+def get_feature_vectors_shared_hpc():
+    hippocampal_regions = np.array(['DG','CA3','CA2','CA1v','CA1d','SUBv','SUBd'])
+    
+    df_avg_to_shared, df_avg_from_shared = get_feature_vectors_shared(hippocampal_regions)
+    
     return (df_avg_to_shared, df_avg_from_shared)
 
 def get_correlation_matrix(feature_vectors, distance_metric='cosine'):
