@@ -26,15 +26,13 @@ def get_feature_vectors_unique():
 
     return (df_avg_from, df_avg_to)
 
-def get_feature_vectors_shared(seed_regions):
-    df_average = pd.read_csv('../data/average_connectome_data.csv', header=0, index_col=0)
-
+def get_feature_vectors_shared(df_connectome, seed_regions):
     # FROM seed regions (efferent)
-    df_avg_from = df_average[df_average.index.isin(seed_regions)]
+    df_avg_from = df_connectome[df_connectome.index.isin(seed_regions)]
     
     # TO seed regions (afferent)
-    df_average_t = df_average.T
-    df_avg_to = df_average_t[df_average_t.index.isin(seed_regions)]
+    df_connectome_t = df_connectome.T
+    df_avg_to = df_connectome_t[df_connectome_t.index.isin(seed_regions)]
     
     # drop seed region columns
     df_avg_from = df_avg_from.drop(seed_regions, axis=1)
@@ -52,9 +50,10 @@ def get_feature_vectors_shared(seed_regions):
     return (df_avg_to_shared, df_avg_from_shared)
     
 def get_feature_vectors_shared_hpc():
+    df_average = pd.read_csv('../data/average_connectome_data.csv', header=0, index_col=0)
     hippocampal_regions = np.array(['DG','CA3','CA2','CA1v','CA1d','SUBv','SUBd'])
     
-    df_avg_to_shared, df_avg_from_shared = get_feature_vectors_shared(hippocampal_regions)
+    df_avg_to_shared, df_avg_from_shared = get_feature_vectors_shared(df_average, hippocampal_regions)
     
     return (df_avg_to_shared, df_avg_from_shared)
 
@@ -397,9 +396,13 @@ def get_pca_variances(matrix_afferent, matrix_efferent, n_components, scale=Fals
     # CHANGE: We must transpose the matrices to (n_samples, n_features)
     # before fitting them with sklearn's PCA.
     # CHANGE: Sstandardize the data
-    scaler = StandardScaler()
-    afferent_scaled = scaler.fit_transform(matrix_afferent)
-    efferent_scaled = scaler.fit_transform(matrix_efferent)
+    afferent_scaled = matrix_afferent
+    efferent_scaled = matrix_efferent
+
+    if scale:
+        scaler = StandardScaler()
+        afferent_scaled = scaler.fit_transform(matrix_afferent)
+        efferent_scaled = scaler.fit_transform(matrix_efferent)
     
     pca1 = PCA(n_components=n_components, svd_solver='full')
     pca1.fit(afferent_scaled)
