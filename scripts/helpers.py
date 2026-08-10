@@ -6,6 +6,41 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics.pairwise import cosine_similarity
 
+def log_weight_transform(matrix):
+    """
+    Transform ordinal structural connectivity data (0-7) to a log-weighted scale as referenced in
+    Faskowitz & Sporns (2020)
+    
+    Parameters
+    ----------
+    matrix : array-like
+        Input matrix with integer values in {0, 1, 2, 3, 4, 5, 6, 7}.
+    
+    Returns
+    -------
+    np.ndarray
+        Matrix of the same shape with ordinal values mapped to log-weighted values.
+    
+    Raises
+    ------
+    ValueError
+        If the input contains values outside the range [0, 7] or non-integer values.
+    """
+    # Mapping: index = ordinal value, value = log-weighted value
+    weights = np.array([0.0, 0.0001, 0.001, 0.01, 0.075, 0.3, 0.75, 1.0])
+    
+    arr = np.asarray(matrix)
+    
+    # Validate: integer-valued and within [0, 7]
+    if not np.all(np.equal(np.mod(arr, 1), 0)):
+        raise ValueError("Input matrix must contain integer values.")
+    if arr.min() < 0 or arr.max() > 7:
+        raise ValueError(f"Input values must be in [0, 7]; got range [{arr.min()}, {arr.max()}].")
+    
+    # Cast to int for safe indexing, then map via fancy indexing
+    return weights[arr.astype(int)]
+
+
 def get_feature_vectors_unique():
     df_average = pd.read_csv('../data/average_connectome_data.csv', header=0, index_col=0)
     hippocampal_regions = np.array(['DG','CA3','CA2','CA1v','CA1d','SUBv','SUBd'])

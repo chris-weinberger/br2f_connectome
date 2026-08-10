@@ -1,0 +1,7 @@
+direction,region_set,n_partners,n_nodes,B,n_pcs
+afferent,shared,72,79,5,5
+afferent,individual,96,103,5,5
+efferent,shared,72,79,5,3
+efferent,individual,165,172,6,3
+both,shared,72,79,8,7
+both,individual,189,196,12,7

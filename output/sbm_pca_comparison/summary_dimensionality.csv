@@ -1,0 +1,10 @@
+direction,region_set,B,B_eff,n_HPC_blocks,HPC_blocks,n_pcs(90%)
+afferent,individual,5,3.62,3,"[2, 3, 4]",5
+afferent,shared,5,3.54,3,"[2, 3, 4]",5
+afferent,union_addendum,5,3.12,3,"[1, 2, 3]",5
+both,individual,12,7.24,4,"[8, 9, 10, 11]",7
+both,shared,8,6.51,2,"[6, 7]",7
+both,union_addendum,12,7.24,4,"[8, 9, 10, 11]",7
+efferent,individual,6,4.87,4,"[1, 2, 3, 5]",3
+efferent,shared,5,4.38,4,"[1, 2, 3, 4]",3
+efferent,union_addendum,6,4.61,5,"[0, 1, 2, 3, 5]",3

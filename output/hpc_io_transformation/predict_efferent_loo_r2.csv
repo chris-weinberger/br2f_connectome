@@ -1,0 +1,7 @@
+,0
+afferent,0.034
+division,-0.008
+afferent+division,0.045
+whole-brain (best k),0.142
+afferent+whole-brain (best k),0.156
+whole-brain RF (nonlinear),0.22

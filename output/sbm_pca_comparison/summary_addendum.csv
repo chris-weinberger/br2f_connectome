@@ -1,0 +1,4 @@
+direction,region_set,n_partners,n_nodes,B,n_pcs
+afferent,union_addendum,189,196,5,5
+efferent,union_addendum,189,196,6,3
+both,union_addendum,189,196,12,7
